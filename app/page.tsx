@@ -1,13 +1,49 @@
 "use client"
 
 import { GrowthChart } from "@/components/growthChart";
-import PageTitle from "@/components/pageTitle";
+import PageTitle from "@/components/page-title";
 import PlacementCard from "@/components/placementCard";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import useInteractionDashboard from "@/zustand/useInteractionDashboard";
-import useLogin from "@/zustand/useLogin";
+import useLogin from "@/zustand/use-login";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+const placements = [
+  {
+    bankCode: "BNI",
+    placementType: "Daily",
+    balance: 12000000,
+    lastUpdated: "23/06/2025",
+    color: "orange",
+  },
+  {
+    bankCode: "BRI",
+    placementType: "Savings",
+    balance: 27000000,
+    lastUpdated: "22/06/2025",
+    color: "blue",
+  },
+  {
+    bankCode: "Stockbit",
+    placementType: "Investment",
+    balance: 87500000,
+    lastUpdated: "20/06/2025",
+    color: "slate",
+  },
+  {
+    bankCode: "Gopay",
+    placementType: "daily",
+    balance: 200000,
+    lastUpdated: "22/06/2025",
+    color: "green",
+  },
+  {
+    bankCode: "Dana",
+    placementType: "games",
+    balance: 180000,
+    lastUpdated: "22/06/2025",
+    color: "sky",
+  },
+];
 
 export default function Home() {
 
@@ -30,29 +66,34 @@ export default function Home() {
   }, [errorLogin, router]);
 
   return (
-    <main>
-      <div>
-        <div style={{ padding: "10px" }}>
-          <SidebarTrigger />
-        </div>
-        <div style={{ height: "1px", backgroundColor: "#E0E0E0" }}/>
-        <div style={{ margin: "1rem 2rem" }}>
+    <main className="min-h-screen">
+      <div className="flex flex-col">
+        <div className="flex flex-col p-4 space-y-4">
           <PageTitle
             title="Summary"
             subTitle="track your financial growth"
           />
-          {/* <FilterData
-            keyword={keyword}
-            setKeyword={setKeyword}
-            filterList1={statusOptions}
-            filter1={status}
-            setFilter1={setStatus}
-            filterList2={platformOptions}
-            filter2={platform}
-            setFilter2={setPlatform}
-          /> */}
-          <PlacementCard />
-          <GrowthChart />
+          
+          {/* Horizontal Scroll Cards */}
+          <div className="flex overflow-x-auto pb-2 -mx-4 px-4">
+            <div className="flex space-x-4">
+              {placements.map((placement, index) => (
+                <PlacementCard
+                  key={index}
+                  bankCode={placement.bankCode}
+                  placementType={placement.placementType}
+                  balance={placement.balance}
+                  lastUpdated={placement.lastUpdated}
+                  color={placement.color}
+                />
+              ))}
+            </div>
+          </div>
+          
+          {/* Growth Chart - Tambahkan padding dan width penuh */}
+          <div className="w-full px-0 overflow-hidden">
+            <GrowthChart />
+          </div>
         </div>
       </div>
     </main>

@@ -1,24 +1,18 @@
 import React from "react";
 import Typography from "../Typography/Typography";
+import { convertRupiah } from "@/utils/helper";
+import { PlacementCardProps } from "@/types";
 
-// interface PlacementCardProps {
-//   bankCode: string;
-//   placementType: string;
-//   balance: number;
-//   lastUpdated: string;
-//   color: string;
-// }
-
-const PlacementCard = () => {
+const PlacementCard = ({bankCode, placementType, balance, lastUpdated, color}: PlacementCardProps) => {
   return (
-    <div className="max-w-[360px] w-full my-2 p-6 rounded-2xl flex flex-col gap-4 bg-gradient-to-br from-orange-400 to-orange-500 shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <div className={`min-w-[360px] w-full my-2 p-6 rounded-2xl flex flex-col gap-4 bg-gradient-to-br from-${color}-400 to-${color}-500 shadow-lg hover:shadow-xl transition-shadow duration-300`}>
       <div className="w-full flex flex-row gap-1 items-center justify-between">
         <Typography type="title-2xl" color="#fff">
-          BNI
+          {bankCode}
         </Typography>
         <div className="inline-flex items-center px-3 py-1 rounded-full backdrop-blur-sm bg-white/30 border border-white/20 shadow-sm">
           <Typography type="caption-md" color="#fff">
-            daily
+            {placementType}
           </Typography>
         </div>
       </div>
@@ -28,12 +22,12 @@ const PlacementCard = () => {
           Total Balance
         </Typography>
         <Typography type="title-xl" color="#fff">
-          Rp12,000,000
+          {convertRupiah(balance)}
         </Typography>
       </div>
 
       <Typography type="caption-md" color="#fff">
-        Last Updated: 23/06/2025
+        Last Updated: {lastUpdated}
       </Typography>
     </div>
   );

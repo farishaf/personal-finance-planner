@@ -13,7 +13,6 @@ const PageTitle = ({title, subTitle}: PageTitleProps) => {
             flexDirection: "column",
             justifyContent: "space-between",
             alignItems: "start",
-            marginBottom: "1rem"
         }}
     >
         <Typography type="title-2xl">{title}</Typography>

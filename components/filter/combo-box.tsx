@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '../ui/button';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';
-import { OptionsProps } from '@/utils/interfaces';
+import { OptionsProps } from '@/types';
 import { cn } from '@/lib/utils';
 
 interface ComboboxProps {

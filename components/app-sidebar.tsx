@@ -42,7 +42,7 @@ export function AppSidebar() {
     // setOpen,
   } = useSidebar()
 
-  const pathname = window.location.pathname;
+  const pathname = "/transaction";
   
   return (
     <Sidebar collapsible="icon">
@@ -78,7 +78,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild style={{ backgroundColor: pathname == item.url ? "black" : "none" }}>
+                  <SidebarMenuButton asChild style={{ backgroundColor: pathname == item.url ? "black" : "white" }}>
                     <a href={item.url} style={{ color: pathname == item.url ? "white" : "black" }}>
                       <item.icon />
                       <span>{item.title}</span>

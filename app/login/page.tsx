@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react";
-import useLogin from "@/zustand/useLogin";
+import useLogin from "@/zustand/use-login";
 
 const AuthPage: React.FC = () => {
 

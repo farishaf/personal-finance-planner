@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "../ui/input";
-import Combobox from "./comboBox";
-import { OptionsProps } from "@/utils/interfaces";
+import Combobox from "./combo-box";
+import { OptionsProps } from "@/types";
 
 interface FilterDataProps {
   keyword: string;
