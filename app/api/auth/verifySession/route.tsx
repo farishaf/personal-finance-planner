@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 import { cookies } from "next/headers";
-import BACKEND_URL_CRM from "@/config/api";
+// import BACKEND_URL_CRM from "@/config/api";
 import { serialize } from "cookie";
 
 export async function GET() {
@@ -26,7 +26,7 @@ export async function GET() {
                 }
             };
     
-            const url = `${BACKEND_URL_CRM}/auth/validate`;
+            const url = `/auth/validate`;
 
             const data = {
                 allow_all_roles: true,

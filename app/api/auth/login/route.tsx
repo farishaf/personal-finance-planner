@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { serialize } from "cookie";
 import axios from "axios";
-import ApiConfig from "@/config/api";
+// import ApiConfig from "@/config/api";
 
 interface LoginRequest {
     username: string;
@@ -9,8 +9,8 @@ interface LoginRequest {
 }
 
 export async function POST(request: Request) {
-    const { BACKEND_URL_CRM } = ApiConfig();
-    console.log("BACKEND_URL_CRM:", BACKEND_URL_CRM); // Debugging line
+    // const { BACKEND_URL_CRM } = ApiConfig();
+    // console.log("BACKEND_URL_CRM:", BACKEND_URL_CRM); // Debugging line
 
     const body: LoginRequest = await request.json();
     const { username, password } = body;
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
             }
         };
 
-        const url = `${BACKEND_URL_CRM}/auth/login`;
+        const url = `/auth/login`;
         console.log("Request URL:", url); // Debugging line
 
         const data = { username, password };
