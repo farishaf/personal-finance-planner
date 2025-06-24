@@ -28,7 +28,7 @@ import {
 // Dummy data for the chart
 const generateData = (timeRange: string) => {
   const now = new Date();
-  let data = [];
+  const data = [];
 
   if (timeRange === "week") {
     for (let i = 6; i >= 0; i--) {
