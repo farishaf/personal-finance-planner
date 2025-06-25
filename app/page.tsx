@@ -1,8 +1,8 @@
 "use client"
 
-import { GrowthChart } from "@/components/growthChart";
+import { GrowthChart } from "@/components/growth-chart";
 import PageTitle from "@/components/page-title";
-import PlacementCard from "@/components/placementCard";
+import PlacementCard from "@/components/placement-card";
 import useLogin from "@/zustand/use-login";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
