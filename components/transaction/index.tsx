@@ -7,9 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { PlusIcon } from "@radix-ui/react-icons";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 // Dummy data
 const incomeData = [
@@ -54,40 +60,21 @@ const outcomeData = [
   },
 ];
 
-export function TransactionTable() {
-  const [activeTab, setActiveTab] = React.useState("income");
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 5;
+export function TransactionTable({ activeTab }: { activeTab: string }) {
+  // const [currentPage, setCurrentPage] = React.useState(1);
+  // const itemsPerPage = 5;
 
   const data = activeTab === "income" ? incomeData : outcomeData;
 
   // Dummy pagination logic
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const paginatedData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  // const totalPages = Math.ceil(data.length / itemsPerPage);
+  // const paginatedData = data.slice(
+  //   (currentPage - 1) * itemsPerPage,
+  //   currentPage * itemsPerPage
+  // );
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <Tabs
-          defaultValue="income"
-          onValueChange={(value) => setActiveTab(value)}
-          className="w-[400px]"
-        >
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="income">Income</TabsTrigger>
-            <TabsTrigger value="outcome">Outcome</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        
-        <Button className="gap-2">
-          <PlusIcon className="h-4 w-4" />
-          Add Transaction
-        </Button>
-      </div>
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -101,7 +88,7 @@ export function TransactionTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((transaction) => (
+            {data.map((transaction) => (
               <TableRow key={transaction.id}>
                 <TableCell>{transaction.date}</TableCell>
                 <TableCell>{transaction.name}</TableCell>
@@ -135,29 +122,22 @@ export function TransactionTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-end space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </Button>
-      </div>
+        <Pagination className="flex justify-end">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
     </div>
   );
 }

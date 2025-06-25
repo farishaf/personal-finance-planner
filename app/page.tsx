@@ -36,13 +36,20 @@ const placements = [
     lastUpdated: "22/06/2025",
     color: "green",
   },
-  {
-    bankCode: "Dana",
-    placementType: "games",
-    balance: 180000,
-    lastUpdated: "22/06/2025",
-    color: "sky",
-  },
+  // {
+  //   bankCode: "Dana",
+  //   placementType: "games",
+  //   balance: 180000,
+  //   lastUpdated: "22/06/2025",
+  //   color: "sky",
+  // },
+  // {
+  //   bankCode: "Jago",
+  //   placementType: "savings",
+  //   balance: 15000,
+  //   lastUpdated: "22/06/2025",
+  //   color: "orange",
+  // },
 ];
 
 export default function Home() {
@@ -76,7 +83,7 @@ export default function Home() {
           
           {/* Horizontal Scroll Cards */}
           <div className="flex overflow-x-auto pb-2 -mx-4 px-4">
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 w-full">
               {placements.map((placement, index) => (
                 <PlacementCard
                   key={index}
