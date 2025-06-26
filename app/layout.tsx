@@ -28,10 +28,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                <ResizablePanelGroup direction="horizontal" style={{ height: "100%", width: "100%" }}>
                   {login && <AppSidebar />}
                   <ResizablePanel defaultSize={100} style={{ height: "100%" }}>
-                    <div className="px-2 py-[10px] flex justify-start">
-                      <SidebarTrigger />
-                    </div>
-                    <div style={{ height: "1px", borderBottom: "1px solid #E0E0E0" }}/>
+                    {login && (
+                      <>
+                        <div className="px-2 py-[10px] flex justify-start">
+                          <SidebarTrigger />
+                        </div>
+                        <div style={{ height: "1px", borderBottom: "1px solid #E0E0E0" }}/>
+                      </>
+                    )}
                     {children}
                   </ResizablePanel>
                 </ResizablePanelGroup>
