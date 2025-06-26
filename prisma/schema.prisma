@@ -17,21 +17,58 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
   email String @unique
-  name String?
-  placement Placement[] 
+  name String
+  password String
+  placements Placement[]
+  transactions Transaction[]
+  categories Category[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Placement {
   id Int @id @default(autoincrement())
   name String
-  amount Int
-  palcementTag String
-  userId Int
+  amount Decimal
+  placementTag String
   user User @relation(fields: [userId], references: [id])
+  userId Int
+  color String
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  transactions Transaction[]
 }
 
-// model Tag {
-//   id Int @id @default(autoincrement())
-//   name String
+model Transaction {
+  id Int @id @default(autoincrement())
+  date DateTime @default(now())
+  name String
+  type TransactionType
+  amount Decimal
+  placement Placement @relation(fields: [placementId], references: [id])
+  placementId Int
+  category Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int? // Optional category reference
+  notes String
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-// }
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  icon String? @db.VarChar(50) // For Custom UI using icons
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  transactions Transaction[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TransactionType {
+  INCOME
+  OUTCOME
+}
