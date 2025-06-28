@@ -2,7 +2,7 @@ import { PrismaClient } from "@/app/generated/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { LoginInput, SafeUser } from "@/types/auth";
+import { LoginInput, LoginResponse, SafeUser } from "@/types/auth";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
@@ -70,25 +70,21 @@ export async function POST(request: Request) {
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "1h" });
 
     // Create response without password
-    const responseUser: SafeUser = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      createdAt: user.createdAt,
+    const response: LoginResponse = {
+      user: {
+        email: user.email,
+        name: user.name,
+      },
+      token: token,
     };
 
     return NextResponse.json(
       {
-        user: responseUser,
+        response,
         message: "Login successful",
       },
       {
         status: 200,
-        headers: {
-          "Set-Cookie": `token=${token}; Path=/; HttpOnly; SameSite=Strict${
-            process.env.NODE_ENV === "production" ? "; Secure" : ""
-          }`,
-        },
       }
     );
   } catch (error: unknown) {

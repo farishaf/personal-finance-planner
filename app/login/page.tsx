@@ -1,25 +1,39 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import useLogin from "@/zustand/use-login";
 import { colors } from "@/utils/color";
 import Typography from "@/components/Typography/Typography";
+import { useRouter } from "next/navigation";
 
 const AuthPage: React.FC = () => {
   const {
     loadingLogin,
     errorLogin,
-    username,
+    email,
     password,
-    setUsername,
+    setEmail,
     setPassword,
-    login,
+    requestLogin,
   } = useLogin();
+
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login();
+    await requestLogin();
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      router.push("/");
+    }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      router.push("/");
+    }
+  }, [router]);
 
   return (
     <div
@@ -164,8 +178,8 @@ const AuthPage: React.FC = () => {
                 id="email"
                 type="email"
                 placeholder="you@example.com"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 style={{
                   width: "100%",
                   padding: "12px 16px",

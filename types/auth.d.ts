@@ -12,10 +12,8 @@ export type LoginInput = {
 
 export type LoginResponse = {
   user?: {
-    id: number;
     email: string;
     name: string | null;
-    createdAt: Date;
   };
   token?: string;
   message?: string;

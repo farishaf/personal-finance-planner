@@ -1,27 +1,28 @@
+import axios from 'axios';
 import { create } from 'zustand'
 
 interface LoginState {
     loadingLogin: boolean;
     errorLogin: boolean;
-    username: string;
+    email: string;
     password: string;
-    login: () => Promise<void>;
-    setUsername: (username: string) => void;
+    requestLogin: () => Promise<void>;
+    setEmail: (email: string) => void;
     setPassword: (password: string) => void;
 }
 
 const useLogin = create<LoginState>((set, get) => ({
   loadingLogin: false,
   errorLogin: false,
-  username: "",
+  email: "",
   password: "",
-  setUsername: (username: string) => set({ username: username }),
+  setEmail: (email: string) => set({ email: email }),
   setPassword: (password: string) => set({ password: password }),
-  login: async () => {
-    const userName = get().username
+  requestLogin: async () => {
+    const email = get().email
     const drowssap = get().password
-    if (!userName) {
-      alert("Please enter your username.");
+    if (!email) {
+      alert("Please enter your email.");
       return;
     }
     if (!drowssap) {
@@ -32,16 +33,22 @@ const useLogin = create<LoginState>((set, get) => ({
     set({ loadingLogin: true });
 
     try {
-    //   const response = await axios.post("/api/auth/login", {
-    //     username: "super_admin",
-    //     password: "12345678"
-    //   });
+      const response = await axios.post("/api/auth/login", {
+        email: email,
+        password: drowssap
+      });
+      if (response.status !== 200) {
+        console.error("Login failed", response);
+        alert("Login failed. Please try again.");
+        return;
+      }
+      if (response.status === 200) {
+        const token = response.data.response.token;
+        localStorage.setItem("accessToken", token);
+      }
 
-      console.log("Login success");
-      window.location.href = "/";
     } catch (error: unknown) {
       console.error("Login failed", error);
-      alert("Login failed. Please try again.");
     } finally {
         set({ loadingLogin: false });
     }
