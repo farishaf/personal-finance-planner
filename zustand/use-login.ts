@@ -39,7 +39,7 @@ const useLogin = create<LoginState>((set, get) => ({
       });
       if (response.status !== 200) {
         console.error("Login failed", response);
-        alert("Login failed. Please try again.");
+        set({ errorLogin: true });
         return;
       }
       if (response.status === 200) {
@@ -49,6 +49,7 @@ const useLogin = create<LoginState>((set, get) => ({
 
     } catch (error: unknown) {
       console.error("Login failed", error);
+      set({ errorLogin: true });
     } finally {
         set({ loadingLogin: false });
     }

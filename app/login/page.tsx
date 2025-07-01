@@ -3,8 +3,10 @@
 import React, { useEffect } from "react";
 import useLogin from "@/zustand/use-login";
 import { colors } from "@/utils/color";
-import Typography from "@/components/Typography/Typography";
+// import Typography from "@/components/Typography/Typography";
 import { useRouter } from "next/navigation";
+import LandingSideSection from "@/components/landing-side-section";
+// import gsap from "gsap";
 
 const AuthPage: React.FC = () => {
   const {
@@ -18,6 +20,25 @@ const AuthPage: React.FC = () => {
   } = useLogin();
 
   const router = useRouter();
+
+  const leftSectionRef = React.useRef<HTMLDivElement>(null);
+  const rightSectionRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // gsap.from([leftSectionRef.current, rightSectionRef.current], {
+    //   duration: 0.8,
+    //   x: "100%",
+    //   opacity: 0,
+    //   ease: "power3.out",
+    //   stagger: 0.1,
+    // });
+
+    // Check for existing token
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      router.push("/");
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +66,7 @@ const AuthPage: React.FC = () => {
     >
       {/* Left Section */}
       <div
+        ref={leftSectionRef}
         style={{
           flex: 1,
           backgroundColor: colors.dark.primary,
@@ -53,72 +75,14 @@ const AuthPage: React.FC = () => {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "40px",
-          boxSizing: "border-box",
         }}
       >
-        <div
-          style={{
-            fontSize: "24px",
-            fontWeight: "600",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "32px",
-              height: "32px",
-              backgroundColor: colors.light.fade,
-              color: colors.dark.primary,
-              borderRadius: "8px",
-              fontWeight: "bold",
-            }}
-          >
-            <Typography type="title-md">
-              $
-            </Typography>
-          </span>
-          <Typography type="title-lg">
-            Personal Finance Planner
-          </Typography>
-        </div>
-        <Typography type="body-lg">
-          <blockquote
-            style={{
-              fontStyle: "italic",
-              maxWidth: "80%",
-              borderLeft: `3px solid ${colors.orange.primary}`,
-              paddingLeft: "20px",
-              margin: "40px 0",
-            }}
-          >
-            &quot;Take control of your financial future with our comprehensive planning
-            tools. Your journey to financial freedom starts here.&quot;
-            <br />
-            <cite
-              style={{
-                display: "block",
-                marginTop: "12px",
-                fontWeight: "500",
-                fontStyle: "normal",
-                color: colors.dark.fade,
-              }}
-            >
-              — Financial Times
-            </cite>
-          </blockquote>
-        </Typography>
-        <div style={{ fontSize: "14px", color: colors.dark.fade }}>
-          © {new Date().getFullYear()} Personal Finance Planner. All rights reserved.
-        </div>
+        <LandingSideSection />
       </div>
 
       {/* Right Section */}
       <div
+        ref={rightSectionRef}
         style={{
           flex: 1,
           display: "flex",
@@ -303,7 +267,6 @@ const AuthPage: React.FC = () => {
                   gap: "8px",
                 }}
               >
-                <span>⚠️</span>
                 <span>Invalid credentials. Please try again.</span>
               </div>
             )}
@@ -318,7 +281,7 @@ const AuthPage: React.FC = () => {
             >
               Don&apos;t have an account?{" "}
               <a
-                href="#"
+                href="/login/get-started"
                 style={{
                   color: colors.dark.primary,
                   fontWeight: "500",

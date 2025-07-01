@@ -65,10 +65,10 @@ export function AppSidebar() {
                 side={state === "expanded" ? "bottom" : "right"}
                 className="w-[--radix-popper-anchor-width]"
               >
-                <DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
                   <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem className="hover:cursor-pointer" onClick={logout}>
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
