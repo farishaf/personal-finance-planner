@@ -1,9 +1,11 @@
-"use client"
+"use client";
 
+import { AppSidebar } from "@/components/app-sidebar";
 import { GrowthChart } from "@/components/growth-chart";
 import PageTitle from "@/components/page-title";
 import PlacementCard from "@/components/placement-card";
-import useLogin from "@/zustand/use-login";
+import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -54,55 +56,59 @@ const placements = [
 
 export default function Home() {
 
-  const {
-    errorLogin,
-  } = useLogin();
-
   const router = useRouter();
+  const token = localStorage.getItem("accessToken");
 
-  // dummy
   useEffect(() => {
-    if (errorLogin) {
-      if (!sessionStorage.getItem("token")) {
-        router.push("/login");
-        console.log("tidak ada session");
-      } else {
-        return
-      }
+    console.log("isauthenticated", token);
+    if (!token) {
+      router.push("/login");
     }
-  }, [errorLogin, router]);
+  }, [router, token]);
 
   return (
-    <main className="min-h-screen">
-      <div className="flex flex-col">
-        <div className="flex flex-col p-4 space-y-4">
-          <PageTitle
-            title="Summary"
-            subTitle="track your financial growth"
-          />
-          
-          {/* Horizontal Scroll Cards */}
-          <div className="flex overflow-x-auto pb-2 -mx-4 px-4">
-            <div className="flex space-x-4 w-full">
-              {placements.map((placement, index) => (
-                <PlacementCard
-                  key={index}
-                  bankCode={placement.bankCode}
-                  placementType={placement.placementType}
-                  balance={placement.balance}
-                  lastUpdated={placement.lastUpdated}
-                  color={placement.color}
-                />
-              ))}
+    <ResizablePanelGroup
+      direction="horizontal"
+      style={{ height: "100%", width: "100%" }}
+    >
+      {token && <AppSidebar />}
+      <ResizablePanel defaultSize={100} style={{ height: "100%" }}>
+        <div className="px-2 py-[10px] flex justify-start">
+          <SidebarTrigger />
+        </div>
+        <div style={{ height: "1px", borderBottom: "1px solid #E0E0E0" }} />
+        <main className="min-h-screen">
+          <div className="flex flex-col">
+            <div className="flex flex-col p-4 space-y-4">
+              <PageTitle
+                title="Summary"
+                subTitle="track your financial growth"
+              />
+
+              {/* Horizontal Scroll Cards */}
+              <div className="flex overflow-x-auto pb-2 -mx-4 px-4">
+                <div className="flex space-x-4 w-full">
+                  {placements.map((placement, index) => (
+                    <PlacementCard
+                      key={index}
+                      bankCode={placement.bankCode}
+                      placementType={placement.placementType}
+                      balance={placement.balance}
+                      lastUpdated={placement.lastUpdated}
+                      color={placement.color}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Growth Chart - Tambahkan padding dan width penuh */}
+              <div className="w-full px-0 overflow-hidden">
+                <GrowthChart />
+              </div>
             </div>
           </div>
-          
-          {/* Growth Chart - Tambahkan padding dan width penuh */}
-          <div className="w-full px-0 overflow-hidden">
-            <GrowthChart />
-          </div>
-        </div>
-      </div>
-    </main>
-  );  
+        </main>
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
 }

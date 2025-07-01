@@ -1,39 +1,29 @@
 "use client"
 
-import { createContext, useState} from 'react'
+import { createContext, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 
-interface AuthContextType {
-    username: string | null;
-    role: number | null;
-    token: string | null;
-    setUsername: (username: string) => void;
-    setRole: (role: number) => void;
-    setToken: (token: string) => void;
+type AuthContextType = {
+  logout: () => void;
 };
 
-const defaultAuthContext: AuthContextType = {
-    username: null,
-    role: null,
-    token: null,
-    setUsername: () => {},
-    setRole: () => {},
-    setToken: () => {},
-};
+const AuthContext = createContext<AuthContextType>({
+  logout: () => {},
+});
 
-export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
 
-const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [username, setUsername] = useState("");
-    const [role, setRole] = useState(0); 
-    const [token, setToken] = useState("");
+  const logout = () => {
+    localStorage.removeItem('accessToken');
+    router.push('/login');
+  };
 
-    return (
-        <AuthContext.Provider
-             value={{username, setUsername, role, setRole, token, setToken, }}
-            >
-            {children}
-        </AuthContext.Provider>
-    )
-};
+  return (
+    <AuthContext.Provider value={{ logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 
-export default AuthContextProvider;
+export const useAuth = () => useContext(AuthContext);

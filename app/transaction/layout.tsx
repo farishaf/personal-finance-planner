@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import AuthContextProvider from "@/context/auth-context";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export const metadata: Metadata = {
-  title: "Personal Finance Planner",
-  description: "Transaction",
+  title: "Personal Finance Planner - Transactions",
+  description: "Transaction Management",
 };
 
 export default async function TransactionLayout({
@@ -13,18 +13,15 @@ export default async function TransactionLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-
   return (
-    <AuthContextProvider>
-        <ResizablePanelGroup
-          direction="horizontal"
-          style={{ height: "100%", width: "100%" }}
-        >
-          <ResizablePanel defaultSize={100} style={{ height: "100%" }}>
-            {children}
-          </ResizablePanel>
-        </ResizablePanelGroup>
-    </AuthContextProvider>
+    <ResizablePanelGroup
+      direction="horizontal"
+      style={{ height: "100%", width: "100%" }}
+    >
+      <AppSidebar />
+      <ResizablePanel defaultSize={100} style={{ height: "100%" }}>
+        {children}
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }

@@ -13,6 +13,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { useAuth } from "@/context/auth-context"
 
 // need adjustment
 // Menu items.
@@ -42,6 +43,10 @@ export function AppSidebar() {
     // setOpen,
   } = useSidebar()
 
+  const {
+    logout
+  } = useAuth();
+
   const pathname = "/transaction";
   
   return (
@@ -60,10 +65,10 @@ export function AppSidebar() {
                 side={state === "expanded" ? "bottom" : "right"}
                 className="w-[--radix-popper-anchor-width]"
               >
-                <DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
                   <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer" onClick={logout}>
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
