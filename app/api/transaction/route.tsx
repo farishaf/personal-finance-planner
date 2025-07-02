@@ -3,7 +3,7 @@ import { verifyJwt } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-interface RequestBody {
+interface TransactionRequestBody {
   type?: "income" | "outcome";
   startDate?: string;
   endDate?: string;
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     }
 
     const userId = decoded.id;
-    const body: RequestBody = await request.json();
+    const body: TransactionRequestBody = await request.json();
 
     // Validate and set default values for pagination
     const page = Number(body.page) || 1;

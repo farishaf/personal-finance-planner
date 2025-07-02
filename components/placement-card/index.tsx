@@ -2,19 +2,11 @@ import React from "react";
 import Typography from "../Typography/Typography";
 import { convertRupiah } from "@/utils/helper";
 import { PlacementCardProps } from "@/types";
-
-const colorMap = {
-  orange: "from-orange-400 to-orange-500",
-  blue: "from-blue-400 to-blue-500",
-  slate: "from-slate-400 to-slate-500",
-  green: "from-green-400 to-green-500",
-  sky: "from-sky-400 to-sky-500",
-  // Add more colors as needed
-};
+import { colorMaps } from "@/utils/color";
 
 const PlacementCard = ({bankCode, placementType, balance, lastUpdated, color}: PlacementCardProps) => {
 
-  const gradientClass = colorMap[color as keyof typeof colorMap] || "from-gray-400 to-gray-500";
+  const gradientClass = colorMaps[color as keyof typeof colorMaps] || "from-gray-400 to-gray-500";
 
   return (
     <div className={`min-w-[360px] w-full my-2 p-6 rounded-2xl flex flex-col gap-4 bg-gradient-to-br ${gradientClass} shadow-lg hover:shadow-xl transition-shadow duration-300`}>
