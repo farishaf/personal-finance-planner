@@ -25,6 +25,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 
 import { useState } from "react";
+import { AddPlacementDialog } from "./add-placement-dialog";
 
 type Placement = {
   id: string;
@@ -109,7 +110,7 @@ const PlacementSettingsTable = () => {
               Add or edit your money placement
             </CardDescription>
           </div>
-          <Button>Add Placement</Button>
+          <AddPlacementDialog />
         </div>
       </CardHeader>
       <CardContent>
