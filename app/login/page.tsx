@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useLogin from "@/zustand/use-login";
 import { colors } from "@/utils/color";
 // import Typography from "@/components/Typography/Typography";
 import { useRouter } from "next/navigation";
 import LandingSideSection from "@/components/landing-side-section";
-// import gsap from "gsap";
+import gsap from "gsap";
 
 const AuthPage: React.FC = () => {
   const {
@@ -21,9 +21,49 @@ const AuthPage: React.FC = () => {
 
   const router = useRouter();
 
-  const leftSectionRef = React.useRef<HTMLDivElement>(null);
   const rightSectionRef = React.useRef<HTMLDivElement>(null);
 
+  const [currentFace, setCurrentFace] = useState(0); // 0, 1, 2
+  const leftCardRef = useRef<HTMLDivElement>(null);
+
+  const flipToNext = () => {
+    const nextFace = (currentFace + 1) % faces.length;
+
+    const tl = gsap.timeline();
+
+    // First, tilt the card slightly to start the page turn
+    tl.to(leftCardRef.current, {
+      transformOrigin: "left center",
+      duration: 0.3,
+      ease: "power2.out",
+    })
+      // Add a second timeline for the return rotation
+  tl.to(leftCardRef.current, {
+    rotateY: -270, // Continue rotating past 180 to 270 degrees
+    transformOrigin: "left center",
+    duration: 0.4,
+    ease: "power2.in"
+  })
+  .to(leftCardRef.current, {
+    rotateY: -360, // Complete full rotation back to 0
+    transformOrigin: "left center",
+    duration: 0.5,
+    ease: "power2.out",
+    onComplete: () => {
+      // Reset to 0 to avoid potential rendering issues
+      gsap.set(leftCardRef.current, { rotateY: 0 });
+    }
+  });
+
+    // Switch content halfway through the rotation
+    tl.call(
+      () => {
+        setCurrentFace(nextFace);
+      },
+      null,
+      ">-=0.3"
+    ); // Adjust timing to match when the "page" would be fully turned
+  };
   useEffect(() => {
     // gsap.from([leftSectionRef.current, rightSectionRef.current], {
     //   duration: 0.8,
@@ -56,28 +96,57 @@ const AuthPage: React.FC = () => {
     }
   }, [router]);
 
+  const faces = [
+    <LandingSideSection key="1" title="Face 1" />,
+    <LandingSideSection key="2" title="Face 2" />,
+    <LandingSideSection key="3" title="Face 3" />,
+  ];
+
   return (
     <div
       style={{
         display: "flex",
         height: "100vh",
+        width: "100vw",
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
       }}
     >
       {/* Left Section */}
       <div
-        ref={leftSectionRef}
         style={{
           flex: 1,
-          backgroundColor: colors.dark.primary,
-          color: colors.light.primary,
+          overflow: "hidden",
+          backgroundColor: "#111827",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "40px",
+          alignItems: "center",
+          justifyContent: "center",
+          perspective: "1200px", // Add perspective to the container
         }}
       >
-        <LandingSideSection />
+        <div
+          ref={leftCardRef}
+          style={{
+            width: "100%",
+            height: "100%",
+            transformStyle: "preserve-3d",
+            position: "relative",
+            backfaceVisibility: "hidden",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backfaceVisibility: "hidden",
+              color: "#fff",
+              padding: "40px",
+              boxSizing: "border-box",
+            }}
+          >
+            {faces[currentFace]}
+          </div>
+        </div>
       </div>
 
       {/* Right Section */}
@@ -102,6 +171,19 @@ const AuthPage: React.FC = () => {
           }}
         >
           <div style={{ marginBottom: "32px" }}>
+            <button
+              onClick={flipToNext}
+              style={{
+                padding: "10px 20px",
+                borderRadius: "8px",
+                background: "#0f172a",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Flip Left Section
+            </button>
             <h2
               style={{
                 fontSize: "28px",
@@ -217,7 +299,9 @@ const AuthPage: React.FC = () => {
               style={{
                 width: "100%",
                 padding: "12px 16px",
-                backgroundColor: loadingLogin ? colors.dark.secondary : colors.dark.primary,
+                backgroundColor: loadingLogin
+                  ? colors.dark.secondary
+                  : colors.dark.primary,
                 color: "white",
                 border: "none",
                 borderRadius: "8px",

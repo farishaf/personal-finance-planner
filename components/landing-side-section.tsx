@@ -2,9 +2,9 @@ import { colors } from '@/utils/color';
 import React from 'react'
 import Typography from './Typography/Typography';
 
-const LandingSideSection = () => {
+const LandingSideSection = ({ key, title }: { key: string, title: string }) => {
   return (
-      <>
+      <div key={key}>
         <div
           style={{
             fontSize: "24px",
@@ -32,7 +32,7 @@ const LandingSideSection = () => {
             </Typography>
           </span>
           <Typography type="title-lg">
-            Personal Finance Planner
+            {title}
           </Typography>
         </div>
         <Typography type="body-lg">
@@ -64,7 +64,7 @@ const LandingSideSection = () => {
         <div style={{ fontSize: "14px", color: colors.dark.fade }}>
           © {new Date().getFullYear()} Personal Finance Planner. All rights reserved.
         </div>
-      </>
+      </div>
   )
 }
 
