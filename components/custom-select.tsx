@@ -16,11 +16,16 @@ interface CustomSelectProps {
   label: string;
   selectLabel: string;
   options: OptionsProps[];
+  value: string;
+  setValue: (value: string) => void;
 }
-const CustomSelect = ({ label, selectLabel, options }: CustomSelectProps) => {
+const CustomSelect = ({ label, selectLabel, options, value, setValue }: CustomSelectProps) => {
   return (
     <div>
-      <Select>
+      <Select
+        value={value}
+        onValueChange={(e) => setValue(e)}
+      >
         <Label htmlFor="transaction-type">{label}</Label>
         <SelectTrigger>
           <SelectValue placeholder="Select" />
