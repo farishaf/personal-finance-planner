@@ -15,12 +15,14 @@ import { CustomDatePicker } from "../date-picker";
 import { PlusIcon } from "lucide-react";
 import CustomSelect from "../custom-select";
 import { toast } from "sonner";
-import React from "react";
+import React, { useEffect } from "react";
+import { TransactionRequest, useTransaction } from "@/zustand/use-transaction";
+import { format } from "date-fns";
 
 // dummy
-const dummyType = [
-  { label: "Income", value: "income" },
-  { label: "Outcome", value: "outcome" },
+const TransactionTypes = [
+  { label: "Income", value: "INCOME" },
+  { label: "Outcome", value: "OUTCOME" },
 ];
 
 const dummyPlacement = [
@@ -39,20 +41,92 @@ const dummyIncomeTags = [
   { label: "Other", value: "other" },
 ];
 
-// const dummyOutcomeTags = [
-//   { label: "Shopping", value: "Shopping" },
-//   { label: "Bills", value: "Bills" },
-//   { label: "Personal Needs", value: "Personal Needs" },
-//   { label: "Food & Beverages", value: "Food & Beverages" },
-//   { label: "Other", value: "other" },
-// ];
+const dummyOutcomeTags = [
+  { label: "Food", value: "Food" },
+  { label: "Shopping", value: "Shopping" },
+  { label: "Bills", value: "Bills" },
+  { label: "Entertainment", value: "Entertainment" },
+];
 
 export function AddTransactionDialog() {
 
-    const [date, setDate] = React.useState(new Date());
+  const {
+    loadingCreateTx,
+    errorCreateTx,
+    addTransaction,
+  } = useTransaction();
+
+  const [date, setDate] = React.useState<Date>(new Date());
+  const [transactionRequest, setTransactionRequest] = React.useState<TransactionRequest>({
+    type: "INCOME",
+    date: format(new Date(), 'yyyy-MM-dd'),
+    name: "",
+    amount: 0,
+    placement: "",
+    category: "",
+    notes: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTransactionRequest((prevRequest) => ({
+      ...prevRequest,
+      [name]: name === 'amount' ? Number(value) : value,
+    }));
+  }
+
+  const handleSelectChange = (name: keyof TransactionRequest, value: string) => {
+    setTransactionRequest((prevRequest) => ({
+      ...prevRequest,
+      [name]: value
+    }))
+  }
+
+  const handleDateChange = (date: Date) => {
+    setDate(date);
+    setTransactionRequest((prevRequest) => ({
+      ...prevRequest,
+      date: format(date, 'yyyy-MM-dd')
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    console.log("transactionRequest when submited", transactionRequest);
+    e.preventDefault();
+    try {
+      await addTransaction(transactionRequest);
+      toast.success("Transaction has been created");
+      // Reset form after successful submission
+      setTransactionRequest({
+        type: "INCOME",
+        date: format(new Date(), 'yyyy-MM-dd'),
+        name: "",
+        amount: 0,
+        placement: "",
+        category: "",
+        notes: "",
+      });
+      setDate(new Date());
+    } catch (error: unknown) {
+      toast.error(errorCreateTx || "Failed to create transaction");
+      console.log("error add transaction", error);
+    }
+  };
+  
+  useEffect(() => {
+    console.log("transactionRequest", transactionRequest);
+  }, [transactionRequest])
+
+  const disabledButton = loadingCreateTx || 
+    !transactionRequest.date || 
+    !transactionRequest.name || 
+    !transactionRequest.amount || 
+    !transactionRequest.placement || 
+    !transactionRequest.category;
+
   return (
     <Dialog>
-      <form>
+      <form onSubmit={handleSubmit}>
         <DialogTrigger asChild>
           <Button className="gap-2">
             <PlusIcon className="h-4 w-4" />
@@ -63,8 +137,7 @@ export function AddTransactionDialog() {
           <DialogHeader>
             <DialogTitle>Add New Transaction</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
+              Add a new transaction to your records
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
@@ -73,24 +146,36 @@ export function AddTransactionDialog() {
                 <CustomDatePicker
                   label="Date"
                   date={date}
-                  setDate={(date) => setDate(date)}
+                  setDate={handleDateChange}
                 />
               </div>
               <div className="flex-1">
                 <CustomSelect
                   label="Transaction Type"
                   selectLabel="Select Type"
-                  options={dummyType}
+                  options={TransactionTypes}
+                  value={transactionRequest.type}
+                  setValue={(value) => handleSelectChange("type", value as "INCOME" | "OUTCOME")}
                 />
               </div>
             </div>
             <div className="grid gap-3">
               <Label htmlFor="transaction-name">Name</Label>
-              <Input id="transaction-name" name="name" />
+              <Input
+                id="transaction-name"
+                name="name"
+                onChange={handleInputChange}
+                required
+              />
             </div>
             <div className="grid gap-3">
               <Label htmlFor="transaction-amount">Amount</Label>
-              <Input id="transaction-amount" name="amount" />
+              <Input
+                id="transaction-amount"
+                name="amount"
+                onChange={handleInputChange}
+                required
+              />
             </div>
             <div className="flex flex-row w-full gap-3">
               <div className="flex-1">
@@ -98,19 +183,40 @@ export function AddTransactionDialog() {
                   label="Placement"
                   selectLabel="Select Placement"
                   options={dummyPlacement}
+                  value={transactionRequest.placement}
+                  setValue={(value) => handleSelectChange("placement", value)}
                 />
               </div>
               <div className="flex-1">
-                <CustomSelect
-                  label="Tags"
-                  selectLabel="Select Tags"
-                  options={dummyIncomeTags}
-                />
+                {transactionRequest.type === "INCOME" && (
+                  <CustomSelect
+                    label="Category"
+                    selectLabel="Select Category"
+                    options={dummyIncomeTags}
+                    value={transactionRequest.category}
+                    setValue={(value) => handleSelectChange("category", value)}
+                  />
+                )}
+                {transactionRequest.type === "OUTCOME" && (
+                  <CustomSelect
+                    label="Category"
+                    selectLabel="Select Category"
+                    options={dummyOutcomeTags}
+                    value={transactionRequest.category}
+                    setValue={(value) => handleSelectChange("category", value)}
+                  />
+                )}
               </div>
             </div>
             <div className="grid gap-3">
               <Label htmlFor="transaction-notes">Notes</Label>
-              <Input id="transaction-notes" name="notes" />
+              <Input
+                id="transaction-notes"
+                name="notes"
+                placeholder="Optional"
+                value={transactionRequest.notes || ""}
+                onChange={handleInputChange}  
+              />
             </div>
           </div>
           <DialogFooter>
@@ -119,17 +225,10 @@ export function AddTransactionDialog() {
             </DialogClose>
             <Button
               type="submit"
-              onClick={() =>
-                toast(" Transaction has been created", {
-                  description: "Sunday, December 03, 2023 at 9:00 AM",
-                  action: {
-                    label: "Undo",
-                    onClick: () => console.log("Undo"),
-                  },
-                })
-              }
+              disabled={disabledButton}
+              onClick={handleSubmit}
             >
-              Save
+              {loadingCreateTx ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>
         </DialogContent>

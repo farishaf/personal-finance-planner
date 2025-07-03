@@ -2,7 +2,7 @@
 
 import PageTitle from "@/components/page-title";
 import { TransactionTable } from "@/components/transaction";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useEffect } from "react";
 import { AddTransactionDialog } from "@/components/transaction/add-transaction-dialog";
 import { Toaster } from "sonner";
@@ -10,6 +10,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useRouter } from "next/navigation";
 
 const TransactionPage = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeTab, setActiveTab] = React.useState("income");
 
   const router = useRouter();
@@ -42,18 +43,26 @@ const TransactionPage = () => {
           <Tabs
             defaultValue="income"
             onValueChange={(value) => setActiveTab(value)}
-            className="w-[400px]"
+            className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="income">Income</TabsTrigger>
-              <TabsTrigger value="outcome">Outcome</TabsTrigger>
-            </TabsList>
+            <div className="flex flex-row justify-between">
+              <TabsList className="grid w-[400px] grid-cols-2">
+                <TabsTrigger value="income">Income</TabsTrigger>
+                <TabsTrigger value="outcome">Outcome</TabsTrigger>
+              </TabsList>
+              <AddTransactionDialog />
+            </div>
+            <div>
+              <TabsContent value="income">
+                <TransactionTable activeTab="income" />
+              </TabsContent>
+
+              <TabsContent value="outcome">
+                <TransactionTable activeTab="outcome" />
+              </TabsContent>
+            </div>
           </Tabs>
-
-          <AddTransactionDialog />
         </div>
-
-        <TransactionTable activeTab={activeTab} />
       </div>
     </>
   );
