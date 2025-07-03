@@ -13,92 +13,112 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
+// import { Checkbox } from "@/components/ui/checkbox";
+// import { Button } from "@/components/ui/button";
+// import {
+//   DropdownMenu,
+// DropdownMenuContent,
+// DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { MoreHorizontal } from "lucide-react";
+// import {
+//   Pagination,
+//   PaginationContent,
+//   PaginationItem,
+// } from "@/components/ui/pagination";
+
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
-
-import { useState } from "react";
+  useEffect,
+  // useState
+} from "react";
 import { AddPlacementDialog } from "./add-placement-dialog";
+import usePlacement from "@/zustand/use-placement";
 
-type Placement = {
-  id: string;
-  name: string;
-  status: "active" | "inactive";
-  tags: string[];
-};
-
+// checkbox status commented
 const PlacementSettingsTable = () => {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [placements, setPlacements] = useState<Placement[]>([
-    {
-      id: "1",
-      name: "Savings Account",
-      status: "active",
-      tags: ["bank", "savings"],
-    },
-    {
-      id: "2",
-      name: "Stock Investment",
-      status: "active",
-      tags: ["investment", "stocks"],
-    },
-    {
-      id: "3",
-      name: "Real Estate",
-      status: "inactive",
-      tags: ["property", "long-term"],
-    },
-    {
-      id: "4",
-      name: "Crypto Wallet",
-      status: "inactive",
-      tags: ["crypto", "high-risk"],
-    },
-  ]);
+  const {
+    placementList,
+    loadingPlacement,
+    // placementPage,
+    // totalPlacement,
+    getPlacement,
+  } = usePlacement();
 
-  const handleRowSelect = (id: string) => {
-    setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
-    );
-  };
+  useEffect(() => {
+    getPlacement();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedRows(placements.map((placement) => placement.id));
-    } else {
-      setSelectedRows([]);
-    }
-  };
+  // const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  // const [placements, setPlacements] = useState<Placement[]>([
+  //   {
+  //     id: "1",
+  //     name: "Savings Account",
+  //     status: "active",
+  //     tags: ["bank", "savings"],
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "Stock Investment",
+  //     status: "active",
+  //     tags: ["investment", "stocks"],
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "Real Estate",
+  //     status: "inactive",
+  //     tags: ["property", "long-term"],
+  //   },
+  //   {
+  //     id: "4",
+  //     name: "Crypto Wallet",
+  //     status: "inactive",
+  //     tags: ["crypto", "high-risk"],
+  //   },
+  // ]);
 
-  const handleBulkStatusChange = (newStatus: "active" | "inactive") => {
-    setPlacements((prev) =>
-      prev.map((placement) =>
-        selectedRows.includes(placement.id)
-          ? { ...placement, status: newStatus }
-          : placement
-      )
-    );
-    setSelectedRows([]);
-  };
+  // const handleRowSelect = (id: string) => {
+  //   setSelectedRows((prev) =>
+  //     prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+  //   );
+  // };
 
-  const handleDelete = (id: string) => {
-    setPlacements((prev) => prev.filter((placement) => placement.id !== id));
-  };
+  // const handleSelectAll = (checked: boolean) => {
+  //   if (checked) {
+  //     setSelectedRows(placements.map((placement) => placement.id));
+  //   } else {
+  //     setSelectedRows([]);
+  //   }
+  // };
 
-  const allSelected = selectedRows.length === placements.length && placements.length > 0;
-//   const someSelected = selectedRows.length > 0 && selectedRows.length < placements.length;
-  const selectedPlacements = placements.filter((placement) =>
-    selectedRows.includes(placement.id)
-  );
-  const allSelectedActive = selectedPlacements.every((p) => p.status === "active");
-  const allSelectedInactive = selectedPlacements.every((p) => p.status === "inactive");
+  // const handleBulkStatusChange = (newStatus: "active" | "inactive") => {
+  //   setPlacements((prev) =>
+  //     prev.map((placement) =>
+  //       selectedRows.includes(placement.id)
+  //         ? { ...placement, status: newStatus }
+  //         : placement
+  //     )
+  //   );
+  //   setSelectedRows([]);
+  // };
+
+  // const handleDelete = (id: string) => {
+  //   setPlacements((prev) => prev.filter((placement) => placement.id !== id));
+  // };
+
+  // const allSelected =
+  //   selectedRows.length === placements.length && placements.length > 0;
+  // //   const someSelected = selectedRows.length > 0 && selectedRows.length < placements.length;
+  // const selectedPlacements = placements.filter((placement) =>
+  //   selectedRows.includes(placement.id)
+  // );
+  // const allSelectedActive = selectedPlacements.every(
+  //   (p) => p.status === "active"
+  // );
+  // const allSelectedInactive = selectedPlacements.every(
+  //   (p) => p.status === "inactive"
+  // );
 
   return (
     <Card className="w-full">
@@ -106,15 +126,13 @@ const PlacementSettingsTable = () => {
         <div className="flex justify-between items-center">
           <div>
             <CardTitle>Placement Settings</CardTitle>
-            <CardDescription>
-              Add or edit your money placement
-            </CardDescription>
+            <CardDescription>Add or edit your money placement</CardDescription>
           </div>
           <AddPlacementDialog />
         </div>
       </CardHeader>
       <CardContent>
-        {selectedRows.length > 0 && (
+        {/* {selectedRows.length > 0 && (
           <div className="mb-4 flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {selectedRows.length} selected
@@ -138,17 +156,17 @@ const PlacementSettingsTable = () => {
               </Button>
             )}
           </div>
-        )}
+        )} */}
 
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40px]">
+              {/* <TableHead className="w-[40px]">
                 <Checkbox
                   checked={allSelected}
                   onCheckedChange={handleSelectAll}
                 />
-              </TableHead>
+              </TableHead> */}
               <TableHead>Status</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Tags</TableHead>
@@ -156,72 +174,89 @@ const PlacementSettingsTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {placements.map((placement) => (
-              <TableRow key={placement.id}>
-                <TableCell>
-                  <Checkbox
-                    checked={selectedRows.includes(placement.id)}
-                    onCheckedChange={() => handleRowSelect(placement.id)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`h-2 w-2 rounded-full ${
-                        placement.status === "active"
-                          ? "bg-green-500"
-                          : "bg-gray-500"
-                      }`}
+            {placementList && placementList.length > 0 && !loadingPlacement ? (
+              placementList.map((placement) => (
+                <TableRow key={placement.id}>
+                  {/* <TableCell>
+                    <Checkbox
+                      checked={selectedRows.includes(placement.id)}
+                      onCheckedChange={() => handleRowSelect(placement.id)}
                     />
-                    <span className="capitalize">{placement.status}</span>
-                  </div>
-                </TableCell>
-                <TableCell>{placement.name}</TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    {placement.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-1 text-xs rounded-full bg-secondary text-secondary-foreground"
-                      >
-                        {tag}
+                  </TableCell> */}
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {placement.isActive ? (
+                        <>
+                          <div
+                            className={"h-2 w-2 rounded-full bg-green-500"}
+                          />
+                          <span className="capitalize">Active</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className={"h-2 w-2 rounded-full bg-gray-500"} />
+                          <span className="capitalize">Inactive</span>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{placement.name}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      <span className="px-2 py-1 text-xs rounded-full bg-secondary text-secondary-foreground">
+                        {placement.placementTag}
                       </span>
-                    ))}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Edit Data</DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          handleBulkStatusChange(
-                            placement.status === "active" ? "inactive" : "active"
-                          )
-                        }
-                      >
-                        Set {placement.status === "active" ? "Inactive" : "Active"}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-red-500"
-                        onClick={() => handleDelete(placement.id)}
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    </div>
+                  </TableCell>
+                  {/* <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>Edit Data</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleBulkStatusChange(
+                              placement.status === "active"
+                                ? "inactive"
+                                : "active"
+                            )
+                          }
+                        >
+                          Set{" "}
+                          {placement.status === "active"
+                            ? "Inactive"
+                            : "Active"}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-red-500"
+                          onClick={() => handleDelete(placement.id)}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell> */}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center">
+                  No data available
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
 
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -246,7 +281,7 @@ const PlacementSettingsTable = () => {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

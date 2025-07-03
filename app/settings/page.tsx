@@ -3,9 +3,9 @@
 import PageTitle from "@/components/page-title";
 import React, { useEffect } from "react";
 import PlacementSettingsTable from "@/components/settings/placement-settings";
-import TagsSettings from "@/components/settings/tags-settings";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useRouter } from "next/navigation";
+import CategorySettings from "@/components/settings/category-settings";
 
 const SettingsPage = () => {
   const router = useRouter();
@@ -33,7 +33,7 @@ const SettingsPage = () => {
         {/* to do: add settings components here */}
         <div className="flex flex-row w-full gap-4 justify-between">
           <PlacementSettingsTable />
-          <TagsSettings />
+          <CategorySettings />
         </div>
       </div>
     </>
