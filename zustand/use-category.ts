@@ -56,6 +56,10 @@ const useCategory = create<CategoryState>((set, get) => ({
 
     } catch (error: any) {
       set({ errorCategory: true, loadingCategory: false });
+      if (error.status === 401) {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+      }
       return { success: false, error: error.message };
     } finally {
       set({ loadingCategory: false });
@@ -91,6 +95,12 @@ const useCategory = create<CategoryState>((set, get) => ({
 
     } catch (error: any) {
       set({ errorCategory: true, loadingCategory: false });
+
+      if (error.status === 401) {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+      }
+
       return { success: false, error: error.message };
     } finally {
       set({ loadingCategory: false });

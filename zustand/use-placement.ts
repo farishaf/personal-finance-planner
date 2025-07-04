@@ -63,6 +63,12 @@ const usePlacement = create<PlacementState>((set, get) => ({
 
     } catch (error: any) {
       set({ errorPlacement: true, loadingPlacement: false });
+
+      if (error.status === 401) {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+      }
+
       return { success: false, error: error.message };
     } finally {
       set({ loadingPlacement: false });
@@ -91,6 +97,12 @@ const usePlacement = create<PlacementState>((set, get) => ({
 
     } catch (error: any) {
       set({ errorPlacement: true, loadingPlacement: false });
+
+      if (error.status === 401) {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+      }
+
       return { success: false, error: error.message };
     } finally {
       set({ loadingPlacement: false });
@@ -122,6 +134,12 @@ const usePlacement = create<PlacementState>((set, get) => ({
 
     } catch (error: any) {
       set({ errorPlacement: true });
+
+      if (error.status === 401) {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+      }
+
       return { success: false, error: error.message };
     } finally {
       set({ loadingPlacement: false });

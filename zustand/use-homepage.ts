@@ -39,10 +39,16 @@ export const useHomepage = create<HomepageState>((set, get) => ({
             if (response.status === 200) {
                 set({ txSummary: response.data });
             }
-        } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             set({
-                errorSummary: error instanceof Error ? error.message : 'Failed to fetch transactions',
+                errorSummary: error instanceof Error ? error.message : 'Failed to fetch transactions summary',
             });
+
+            if (error.status === 401) {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+            }
         } finally {
             set({ loadingSummary: false });
         }

@@ -71,10 +71,16 @@ export const useTransaction = create<TransactionState>((set, get) => ({
             } else {
                 set({ outcome: { data: response.data.data, pagination: response.data.pagination } });
             }
-        } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             set({
                 error: error instanceof Error ? error.message : 'Failed to fetch transactions',
             });
+
+            if (error.status === 401) {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+            }
         } finally {
             set({ loadingFetchTx: false });
         }
@@ -104,10 +110,16 @@ export const useTransaction = create<TransactionState>((set, get) => ({
 
             console.log("response add transaction", response);
             set({ dataTxUpdated: !get().dataTxUpdated });
-        } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             set({
                 errorCreateTx: error instanceof Error ? error.message : 'Failed to fetch transactions',
             });
+
+            if (error.status === 401) {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+            }
         } finally {
             set({ loadingCreateTx: false });
         }

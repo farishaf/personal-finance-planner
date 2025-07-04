@@ -47,7 +47,7 @@ export function AppSidebar() {
     logout
   } = useAuth();
 
-  const pathname = "/transaction";
+  const pathname = window.location.pathname;
   
   return (
     <Sidebar collapsible="icon">
