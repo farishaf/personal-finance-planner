@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 interface TransactionRequestBody {
-  type?: "income" | "outcome";
+  type?: "INCOME" | "OUTCOME";
   startDate?: string;
   endDate?: string;
   filterBy?: "category" | "placement";

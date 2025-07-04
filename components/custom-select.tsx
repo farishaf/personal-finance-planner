@@ -26,7 +26,7 @@ const CustomSelect = ({ label, selectLabel, options, value, setValue }: CustomSe
         value={value}
         onValueChange={(e) => setValue(e)}
       >
-        <Label htmlFor="transaction-type">{label}</Label>
+        <Label htmlFor={label}>{label}</Label>
         <SelectTrigger>
           <SelectValue placeholder="Select" />
         </SelectTrigger>

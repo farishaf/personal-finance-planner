@@ -1,32 +1,32 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `palcementTag` on the `Placement` table. All the data in the column will be lost.
-  - Added the required column `color` to the `Placement` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `placementTag` to the `Placement` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `updateAt` to the `Placement` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `password` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `updatedAt` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Made the column `name` on table `User` required. This step will fail if there are existing NULL values in that column.
-
-*/
 -- CreateEnum
 CREATE TYPE "TransactionType" AS ENUM ('INCOME', 'OUTCOME');
 
--- AlterTable
-ALTER TABLE "Placement" DROP COLUMN "palcementTag",
-ADD COLUMN     "color" TEXT NOT NULL,
-ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "isActive" BOOLEAN NOT NULL DEFAULT true,
-ADD COLUMN     "placementTag" TEXT NOT NULL,
-ADD COLUMN     "updateAt" TIMESTAMP(3) NOT NULL,
-ALTER COLUMN "amount" SET DATA TYPE DECIMAL(65,30);
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "password" TEXT NOT NULL,
-ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL,
-ALTER COLUMN "name" SET NOT NULL;
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Placement" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
+    "placementTag" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "color" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Placement_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Transaction" (
@@ -56,6 +56,12 @@ CREATE TABLE "Category" (
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- AddForeignKey
+ALTER TABLE "Placement" ADD CONSTRAINT "Placement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_placementId_fkey" FOREIGN KEY ("placementId") REFERENCES "Placement"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
