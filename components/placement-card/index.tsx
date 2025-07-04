@@ -2,6 +2,7 @@ import React from "react";
 import Typography from "../Typography/Typography";
 import { convertRupiah } from "@/utils/helper";
 import { PlacementCardProps } from "@/types";
+import { format } from "date-fns";
 
 const colorMaps = {
   // Reds
@@ -78,7 +79,7 @@ const PlacementCard = ({bankCode, placementType, balance, lastUpdated, color}: P
       </div>
 
       <Typography type="caption-md" color="#fff">
-        Last Updated: {lastUpdated}
+        Last Updated: {format(lastUpdated, "dd-MM-yyyy")}
       </Typography>
     </div>
   );
