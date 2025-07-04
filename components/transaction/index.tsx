@@ -28,7 +28,7 @@ export function TransactionTable({
 }: {
   activeTab: "income" | "outcome";
 }) {
-  const { income, outcome, loadingFetchTx, error, fetchTransactions } =
+  const { income, outcome, loadingFetchTx, error, dataTxUpdated, fetchTransactions } =
     useTransaction();
 
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -40,7 +40,7 @@ export function TransactionTable({
       currentPage,
       itemsPerPage
     );
-  }, [activeTab, currentPage, fetchTransactions]);
+  }, [dataTxUpdated, activeTab, currentPage, fetchTransactions]);
 
   const currentData = activeTab === "income" ? income : outcome;
   const { data, pagination } = currentData;

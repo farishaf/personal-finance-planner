@@ -18,77 +18,89 @@ import { toast } from "sonner";
 import React, { useEffect } from "react";
 import { TransactionRequest, useTransaction } from "@/zustand/use-transaction";
 import { format } from "date-fns";
+import usePlacement from "@/zustand/use-placement";
+import useCategory from "@/zustand/use-category";
 
-// dummy
 const TransactionTypes = [
   { label: "Income", value: "INCOME" },
   { label: "Outcome", value: "OUTCOME" },
 ];
 
-const dummyPlacement = [
-  { label: "BNI", value: "bni" },
-  { label: "BRI", value: "bri" },
-  { label: "Stockbit", value: "stockbit" },
-  { label: "Cash", value: "cash" },
-  { label: "Gopay", value: "gopay" },
-];
-
-const dummyIncomeTags = [
-  { label: "Salary", value: "salary" },
-  { label: "Loan", value: "loan" },
-  { label: "Investment", value: "investment" },
-  { label: "Transfer", value: "transfer" },
-  { label: "Other", value: "other" },
-];
-
-const dummyOutcomeTags = [
-  { label: "Food", value: "Food" },
-  { label: "Shopping", value: "Shopping" },
-  { label: "Bills", value: "Bills" },
-  { label: "Entertainment", value: "Entertainment" },
-];
-
 export function AddTransactionDialog() {
+  const { loadingCreateTx, errorCreateTx, addTransaction } = useTransaction();
 
-  const {
-    loadingCreateTx,
-    errorCreateTx,
-    addTransaction,
-  } = useTransaction();
+  const { placementList, getCategoryNamesOnly } = usePlacement();
+
+  const { categoryList, getCategory } = useCategory();
+
+  const [formatedCategoryList, setFormatedCategoryList] = React.useState<
+    { value: string; label: string }[]
+  >([]);
+  const [formatedPlacementList, setFormatedPlacementList] = React.useState<
+    { value: string; label: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (categoryList.length === 0) {
+      getCategory(true);
+    }
+    const tempCategoryList = categoryList.map((item: string) => ({
+      value: item,
+      label: item,
+    }));
+    setFormatedCategoryList(tempCategoryList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryList]);
+
+  useEffect(() => {
+    if (placementList.length === 0) {
+      getCategoryNamesOnly();
+    }
+    const tempPlacementList = placementList.map((item: string) => ({
+      value: item,
+      label: item,
+    }));
+    setFormatedPlacementList(tempPlacementList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placementList]);
 
   const [date, setDate] = React.useState<Date>(new Date());
-  const [transactionRequest, setTransactionRequest] = React.useState<TransactionRequest>({
-    type: "INCOME",
-    date: format(new Date(), 'yyyy-MM-dd'),
-    name: "",
-    amount: 0,
-    placement: "",
-    category: "",
-    notes: "",
-  });
+  const [transactionRequest, setTransactionRequest] =
+    React.useState<TransactionRequest>({
+      type: "INCOME",
+      date: format(new Date(), "yyyy-MM-dd"),
+      name: "",
+      amount: 0,
+      placement: "",
+      category: "",
+      notes: "",
+    });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTransactionRequest((prevRequest) => ({
       ...prevRequest,
-      [name]: name === 'amount' ? Number(value) : value,
+      [name]: name === "amount" ? Number(value) : value,
     }));
-  }
+  };
 
-  const handleSelectChange = (name: keyof TransactionRequest, value: string) => {
+  const handleSelectChange = (
+    name: keyof TransactionRequest,
+    value: string
+  ) => {
     setTransactionRequest((prevRequest) => ({
       ...prevRequest,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleDateChange = (date: Date) => {
     setDate(date);
     setTransactionRequest((prevRequest) => ({
       ...prevRequest,
-      date: format(date, 'yyyy-MM-dd')
-    }))
-  }
+      date: format(date, "yyyy-MM-dd"),
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     console.log("transactionRequest when submited", transactionRequest);
@@ -99,7 +111,7 @@ export function AddTransactionDialog() {
       // Reset form after successful submission
       setTransactionRequest({
         type: "INCOME",
-        date: format(new Date(), 'yyyy-MM-dd'),
+        date: format(new Date(), "yyyy-MM-dd"),
         name: "",
         amount: 0,
         placement: "",
@@ -112,16 +124,17 @@ export function AddTransactionDialog() {
       console.log("error add transaction", error);
     }
   };
-  
+
   useEffect(() => {
     console.log("transactionRequest", transactionRequest);
-  }, [transactionRequest])
+  }, [transactionRequest]);
 
-  const disabledButton = loadingCreateTx || 
-    !transactionRequest.date || 
-    !transactionRequest.name || 
-    !transactionRequest.amount || 
-    !transactionRequest.placement || 
+  const disabledButton =
+    loadingCreateTx ||
+    !transactionRequest.date ||
+    !transactionRequest.name ||
+    !transactionRequest.amount ||
+    !transactionRequest.placement ||
     !transactionRequest.category;
 
   return (
@@ -155,7 +168,9 @@ export function AddTransactionDialog() {
                   selectLabel="Select Type"
                   options={TransactionTypes}
                   value={transactionRequest.type}
-                  setValue={(value) => handleSelectChange("type", value as "INCOME" | "OUTCOME")}
+                  setValue={(value) =>
+                    handleSelectChange("type", value as "INCOME" | "OUTCOME")
+                  }
                 />
               </div>
             </div>
@@ -179,29 +194,22 @@ export function AddTransactionDialog() {
             </div>
             <div className="flex flex-row w-full gap-3">
               <div className="flex-1">
-                <CustomSelect
-                  label="Placement"
-                  selectLabel="Select Placement"
-                  options={dummyPlacement}
-                  value={transactionRequest.placement}
-                  setValue={(value) => handleSelectChange("placement", value)}
-                />
-              </div>
-              <div className="flex-1">
-                {transactionRequest.type === "INCOME" && (
+                {formatedPlacementList && (
                   <CustomSelect
-                    label="Category"
-                    selectLabel="Select Category"
-                    options={dummyIncomeTags}
-                    value={transactionRequest.category}
-                    setValue={(value) => handleSelectChange("category", value)}
+                    label="Placement"
+                    selectLabel="Select Placement"
+                    options={formatedPlacementList}
+                    value={transactionRequest.placement}
+                    setValue={(value) => handleSelectChange("placement", value)}
                   />
                 )}
-                {transactionRequest.type === "OUTCOME" && (
+              </div>
+              <div className="flex-1">
+                {formatedCategoryList && (
                   <CustomSelect
                     label="Category"
                     selectLabel="Select Category"
-                    options={dummyOutcomeTags}
+                    options={formatedCategoryList}
                     value={transactionRequest.category}
                     setValue={(value) => handleSelectChange("category", value)}
                   />
@@ -215,7 +223,7 @@ export function AddTransactionDialog() {
                 name="notes"
                 placeholder="Optional"
                 value={transactionRequest.notes || ""}
-                onChange={handleInputChange}  
+                onChange={handleInputChange}
               />
             </div>
           </div>

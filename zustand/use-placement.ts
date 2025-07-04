@@ -16,6 +16,7 @@ interface PlacementState {
   setColor: (color: string) => void;
   reset: () => void;
   getPlacement: () => void;
+  getCategoryNamesOnly: () => void;
 }
 
 const usePlacement = create<PlacementState>((set, get) => ({
@@ -90,6 +91,37 @@ const usePlacement = create<PlacementState>((set, get) => ({
 
     } catch (error: any) {
       set({ errorPlacement: true, loadingPlacement: false });
+      return { success: false, error: error.message };
+    } finally {
+      set({ loadingPlacement: false });
+    }
+  },
+  getCategoryNamesOnly: async () => {
+    try {
+      set({ loadingPlacement: true });
+
+      const response = await fetch('/api/placement', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        body: JSON.stringify({
+            namesOnly: true
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create category');
+      }
+
+      const responseData = await response.json();
+      console.log("response data", responseData);
+      set({ placementList: responseData.names, totalPlacement: responseData.names.length });
+
+    } catch (error: any) {
+      set({ errorPlacement: true });
       return { success: false, error: error.message };
     } finally {
       set({ loadingPlacement: false });

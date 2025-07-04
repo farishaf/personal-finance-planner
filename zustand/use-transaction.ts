@@ -35,18 +35,20 @@ interface TransactionState {
     loadingCreateTx: boolean;
     error: string | null;
     errorCreateTx: string | null;
+    dataTxUpdated: boolean;
     fetchTransactions: (type: 'INCOME' | 'OUTCOME', page: number, limit: number) => Promise<void>;
     setState: (state: TransactionState) => void;
     addTransaction: (transaction: TransactionRequest) => Promise<void>;
 }
 
-export const useTransaction = create<TransactionState>((set) => ({
+export const useTransaction = create<TransactionState>((set, get) => ({
     income: { data: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 1 } },
     outcome: { data: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 1 } },
     loadingFetchTx: false,
     loadingCreateTx: false,
     error: null,
     errorCreateTx: null,
+    dataTxUpdated: false,
     setState: (state: TransactionState) => set(state),
     fetchTransactions: async (type, page = 1, limit = 10) => {
         set({ loadingFetchTx: true, error: null });
@@ -101,6 +103,7 @@ export const useTransaction = create<TransactionState>((set) => ({
             );
 
             console.log("response add transaction", response);
+            set({ dataTxUpdated: !get().dataTxUpdated });
         } catch (error) {
             set({
                 errorCreateTx: error instanceof Error ? error.message : 'Failed to fetch transactions',
